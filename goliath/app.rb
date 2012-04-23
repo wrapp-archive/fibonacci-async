@@ -4,8 +4,6 @@ require 'em-synchrony/em-http'
 require 'pp'
 
 class App < Goliath::API
-  use Goliath::Rack::Params
-
   def response(env)
     n = env["PATH_INFO"].split("/")[1].to_i
 
