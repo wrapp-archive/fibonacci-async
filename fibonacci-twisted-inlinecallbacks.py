@@ -15,7 +15,6 @@ class Fibonacci(resource.Resource):
     max_concurrent_connections = 0
 
     def render_GET(self, request):
-
         # Do some bookkeeping on open connections
         self.total_connections += 1
         self.concurrent_connections += 1
@@ -25,11 +24,8 @@ class Fibonacci(resource.Resource):
         # This is the in param.
         n = int(request.path.split('/')[1])
 
-        # Base case
         if n == 0 or n == 1:
             self.write_response(n, request)
-
-        # Recurse
         else:
             self.recurse(request, n)
 
@@ -37,30 +33,10 @@ class Fibonacci(resource.Resource):
 
     @defer.inlineCallbacks
     def recurse(self, request, n):
-
-        def callback(results):
-            # Everything went well. Just sum up the results!
-            return sum(results)
-
-        def errback(failure):
-            # Something went wrong.
-            request.setResponseCode(500)
-            failure.trap(defer.FirstError)
-            subFailure = failure.value.subFailure
-
-            # Check the error. If someone further down the recursion tree sent
-            # us an error message, just keep raising it.
-            if subFailure.check(web_error.Error):
-                return json.loads(subFailure.value.response)['message']
-
-            # Otherwise just send a summary of the error.
-            return str(subFailure.value)
-
         deferreds = [
             self.request_fib(n-1),
             self.request_fib(n-2),
         ]
-
         try:
             results = yield defer.gatherResults(deferreds)
             message = sum(results)
@@ -68,7 +44,8 @@ class Fibonacci(resource.Resource):
             subFailure = e.subFailure
             if isinstance(e.value, web_error.Error):
                 message = json.loads(subFailure.value.response)['message']
-            message = str(subFailure.value)
+            else:
+                message = str(subFailure.value)
         self.write_response(message, request)
 
     def write_response(self, message, request):
