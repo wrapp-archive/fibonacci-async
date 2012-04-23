@@ -1,3 +1,9 @@
+# Instructions
+# Install node.js (`brew install node` on OS X)
+# Install npm: `curl http://npmjs.org/install.sh | sh`
+# Install CoffeeScript: `npm install -g coffee-script`
+# Run using `coffee fibonacci-nodejs.coffee`
+
 url = require 'url'
 http = require 'http'
 
