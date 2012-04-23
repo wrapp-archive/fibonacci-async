@@ -7,7 +7,10 @@ fibonacci-twisted
 -----------------
 
 ```
+fibonacci-async (master)$ pip install twisted
+...
 fibonacci-async (master)$ python fibonacci.py
+...
 fibonacci-async (master)$ curl http://localhost:8080/13
 {
     "connections": {
